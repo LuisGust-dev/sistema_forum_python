@@ -13,7 +13,6 @@ import sys
 import os
 from dotenv import load_dotenv 
 from corsheaders.defaults import default_headers
-# Configuração de Messages (Class Boostrap) #
 from django.contrib.messages import constants
 
 
@@ -30,8 +29,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 APPS_DIR = str(os.path.join(BASE_DIR,'apps')) 
 sys.path.insert(0, APPS_DIR)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
+
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
@@ -59,7 +57,6 @@ if not DEBUG:
 	SESSION_COOKIE_SECURE = True
 	CSRF_COOKIE_SECURE = True  
 
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -70,8 +67,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-# Application definition 
 DJANGO_APPS = [ 
+    'apps.contas', 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,7 +77,6 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ] 
 
-# Adicionar no settings.py
 THIRD_APPS = [ 
 	"corsheaders", 
 ]
@@ -88,7 +84,6 @@ THIRD_APPS = [
 PROJECT_APPS = [ 
     'apps.base', 
     'apps.pages', 
-    'apps.contas', 
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + PROJECT_APPS
@@ -97,6 +92,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + PROJECT_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -128,6 +124,17 @@ TEMPLATES = [
 WSGI_APPLICATION = 'core.wsgi.application'
 
 AUTH_USER_MODEL = "contas.MyUser"
+
+#SESSION_EXPIRE_SECONDS = 1800
+#SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+#SESSION_EXPIRE_AFTER_LAST_ACTIVITY_GRACE_PERIOD = 60  
+#SESSION_TIMEOUT_REDIRECT = 'http://localhost:8000/contas/desconectado-inatividade/'
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -140,8 +147,7 @@ DATABASES = {
 }
 
 
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -199,6 +205,8 @@ REQUESTLOGS = {
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 LANGUAGE_CODE = 'pt-br'
 
 TIME_ZONE = 'America/Sao_Paulo'
@@ -210,21 +218,19 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
+
 
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
 STATIC_URL = '/static/' 
 
-# STATICFILES_DIRS = [ # talvez em Produção podesse usar assim.
+# STATICFILES_DIRS = [ 
 #     BASE_DIR / 'static',
 # ]
 
 MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/' 
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
