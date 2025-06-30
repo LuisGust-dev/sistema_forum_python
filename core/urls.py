@@ -27,7 +27,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('base/', base_view, name='base'),
     path('contas/', include('contas.urls')),
-    path('perfil/', include('perfil.urls')), 
+    path('perfil/', include('perfil.urls')),
+    path('config', include('config.urls')),
     path('', include('pages.urls')), 
 ]
 
