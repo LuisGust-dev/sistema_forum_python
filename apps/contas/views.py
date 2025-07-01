@@ -2,27 +2,25 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.models import Group 
+from django.contrib.auth.models import Group
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from perfil.models import Perfil
 from contas.models import MyUser
 from contas.forms import CustomUserCreationForm, UserChangeForm
 from contas.permissions import grupo_colaborador_required
 
+from apps.base.utils import add_form_errors_to_messages
 from apps.perfil.forms import PerfilForm
-
+from core import settings
 
 def timeout_view(request):
     return render(request, 'timeout.html')
- 
- 
+
 # Logout (Sair do sistema)
 def logout_view(request):
     logout(request)
     return redirect('home')
-
-
-
 
 # Autenticar um usuário
 def login_view(request):
@@ -47,7 +45,8 @@ def login_view(request):
             login(request, user) 
             return redirect('home') 
         else:
-            messages.error(request, 'Email ou senha inválidos')
+            messages.error(request, 'Senha ou Email incorreto! Se o erro persistir \
+                                    entre em contato com o suporte!')
     if request.user.is_authenticated: 
         return redirect('home')
     return render(request, 'login.html')
@@ -60,13 +59,26 @@ def register_view(request):
         if form.is_valid(): 
             usuario = form.save(commit=False)
             usuario.is_valid = False
+            usuario.is_active = False
             usuario.save()
 
             group = Group.objects.get(name='usuario')
             usuario.groups.add(group)
-            Perfil.objects.create(usuario=usuario) 
+            Perfil.objects.create(usuario=usuario)
 
-            messages.success(request, 'Registrado. Agora faça o login para começar!')
+            # Envia e-mail avisando usuário.
+            send_mail(
+                'Cadastro Aprovado no PPSaúde',
+                f'Olá, {usuario.first_name}, seu e-mail foi aprovado na plataforma PPSaúde, seja bem-vindo(a).',
+                settings.DEFAULT_FROM_EMAIL,
+                [usuario.email],
+                fail_silently=False,
+            )
+            messages.success(request, 'O usuário '+ usuario.email +'\
+                    foi atualizado com sucesso!')
+            return redirect('lista_usuarios')
+
+            # messages.success(request, 'Registrado. Agora faça o login para começar!')
             
             return redirect('login') 
         else:
@@ -75,8 +87,6 @@ def register_view(request):
                 1 caractere especial e no minimo 8 caracteres.')
     form = CustomUserCreationForm(user=request.user)
     return render(request, "register.html",{"form": form})
-
-
 
 # Atualizar usuário autenticado (meu usuario)
 @login_required()
@@ -87,6 +97,8 @@ def atualizar_meu_usuario(request):
             form.save()
             messages.success(request, 'Seu perfil foi atualizado com sucesso!')
             return redirect('home')
+        else:
+            add_form_errors_to_messages(request, form)
     else:
         form = UserChangeForm(instance=request.user, user=request.user)
     return render(request, 'user_update.html', {'form': form})
@@ -99,7 +111,24 @@ def atualizar_usuario(request, username):
     if request.method == 'POST':
         form = UserChangeForm(request.POST, instance=user, user=request.user)
         if form.is_valid():
-            form.save()
+            usuario = form.save()
+
+            if user.is_active:
+                usuario.is_active = True
+                print(usuario.is_active)
+                # Envia e-mail avisando usuário.
+                send_mail(
+                    'Cadastro Aprovado no PPSaúde',
+                    f'Olá, {usuario.first_name}, seu e-mail foi aprovado na plataforma .',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [usuario.email],
+                    fail_silently=False,
+                )
+                messages.success(request, 'O usuário '+ usuario.email +'\
+                    foi atualizado com sucesso!')
+                return redirect('lista_usuarios')
+
+            usuario.save()
             messages.success(request, 'O perfil de usuário foi atualizado com sucesso!')
             return redirect('home')
     else:
@@ -128,6 +157,9 @@ def adicionar_usuario(request):
             # Salve o usuário
             usuario = user_form.save()
 
+            group = Group.objects.get(name='usuario')
+            usuario.groups.add(group)
+
             # Crie um novo perfil para o usuário
             perfil = perfil_form.save(commit=False)
             perfil.usuario = usuario
@@ -135,6 +167,10 @@ def adicionar_usuario(request):
 
             messages.success(request, 'Usuário adicionado com sucesso.')
             return redirect('lista_usuarios')
+        else:
+            # Errors
+            add_form_errors_to_messages(request, user_form)
+            add_form_errors_to_messages(request, perfil_form)
 
     context = {'user_form': user_form, 'perfil_form': perfil_form}
     return render(request, "adicionar-usuario.html", context)

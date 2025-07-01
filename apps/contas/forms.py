@@ -33,6 +33,21 @@ class CustomUserCreationForm(forms.ModelForm):
                 field.widget.attrs['class'] = 'form-check-input'
             else:
                 field.widget.attrs['class'] = 'form-control'
+
+    def clean_password1(self):
+        password1 = self.cleaned_data.get('password1')
+        if len(password1) < 8:
+            raise forms.ValidationError("A senha deve conter pelo menos 8 caracteres.")
+
+        # Verifique se a senha contém pelo menos uma letra maiúscula, uma letra minúscula e um caractere especial
+        maiusculas=re.search(r'[A-Z]', password1)
+        minusculas=re.search(r'[a-z]', password1)
+        caract_esp=re.search(r'[!@#$%^&*(),.?":{}|<>]', password1)
+        if not maiusculas or not minusculas or not caract_esp:
+            raise forms.ValidationError("A senha deve conter \
+												pelo menos 8 caracteres, uma letra maiúscula, uma letra \
+												minúscula e um caractere especial.")
+        return password1
     
     def clean_password2(self):
         password1 = self.cleaned_data.get("password1")
@@ -44,7 +59,7 @@ class CustomUserCreationForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         if self.user.is_authenticated:
-            password = ''.join(random.choices(string.digits, k=6))
+            password = ''.join(random.choices(string.digits, k=8))
             user.set_password(password)
             user.force_change_password = True
             send_mail( # Envia email para usuario
