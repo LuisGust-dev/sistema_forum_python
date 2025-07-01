@@ -5,7 +5,7 @@
 <div class="p-3">
 
     <div class="d-flex justify-content-between mb-3">
-        <button class="btn btn-secondary" onclick="window.location.href='#'">
+        <button class="btn btn-secondary" onclick="window.location.href='{% url 'adicionar_usuario' %}'">
             <i class="fas fa-user mx-2"></i> Adicionar Novo</button>
         <h2>Usuários cadastrados no sistema</h2>
     </div>
@@ -20,7 +20,6 @@
                 <th scope="col">Nome/Sobrenome</th>
                 <th scope="col">E-mail</th>
                 <th scope="col">Data Criação</th>
-                <th scope="col">Tipo</th>
                 <th scope="col">Ativo</th>
                 <th scope="col">Acão</th>
             </tr>
@@ -30,16 +29,15 @@
             <tr>
                 <td scope="row">{{ usuario.id }}</td>
                 <td scope="row">
-                    {% if usuario.perfil.foto %}
-                    <img src="{{usuario.perfil.foto.url}}" class="img-thumbnail border rounded" width="30" alt="">
+                    {% if usuario.perfil.foto.url %}
+                    <img src="{{ usuario.perfil.foto.url }}" class="img-thumbnail border rounded" width="150" alt="Foto de perfil de {{ usuario.first_name }}">
                     {% else %}
-                    <img src="{% static 'images/perfil/foto-padrao.jpg' %}" class="img-thumbnail border rounded" width="30" alt="">
+                    <img src="images/perfil/foto-padrao.jpg" class="img-thumbnail border rounded" width="150" alt="Foto de perfil de {{ usuario.first_name }}">
                     {% endif %}
                 </td>
                 <td scope="row">{{ usuario.first_name }} {{ usuario.last_name }}</td>
                 <td scope="row">{{ usuario.email }}</td>
                 <td scope="row">{{ usuario.date_joined|date:'d/m/Y'}}</td>
-                <td scope="row"> {{ usuario.groups.all.0.name }}</td>
                 <td scope="row">
                     {% if usuario.is_active %}
                     <span class="badge bg-success rounded-pill d-inline">Ativado</span>
