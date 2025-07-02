@@ -85,11 +85,11 @@ PROJECT_APPS = [
     'apps.base',
     'apps.config',
     'apps.perfil',
-    'apps.pages', 
+    'apps.pages',
+    'apps.forum',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + PROJECT_APPS
-
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -147,8 +147,6 @@ DATABASES = {
             #'PORT':os.getenv('PORT_DB') 
     }
 }
-
-
 
 
 AUTH_PASSWORD_VALIDATORS = [

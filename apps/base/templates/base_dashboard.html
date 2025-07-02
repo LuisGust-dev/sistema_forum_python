@@ -24,7 +24,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg bg-secondary fixed-top" style="height: 70px">
     <div class="container-fluid">
-        <a class="navbar-brand mx-5" href="/apps/base/static">
+        <a class="navbar-brand mx-5" href="{% url 'home' %}">
             <img src="{% static 'images/d-logo.png' %}" width="130" alt="Logo da PPSaúde" loading="lazy"/>
         </a>
         <a class="navbar-toggler border-0" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,13 +46,12 @@
             <i class="fas fa-arrow-left me-2"></i>Site</button>
         <button type="button" class="btn btn-light" aria-current="true" onclick="location.href='{% url 'painel' %}'">
             <i class="fas fa-tachometer-alt me-2"></i>Painel</button>
-        <button type="button" class="btn btn-light"><i class="fas fa-file-alt me-2"></i>Relatórios</button>
-
+        <button type="button" class="btn btn-light" onclick="location.href='{% url 'relatorio' %}'">
+            <i class="fas fa-file-alt me-2"></i>Relatórios</button>
         {% if perms.contas.view_myuser %}
         <button type="button" class="btn btn-light" onclick="location.href='{% url 'lista_usuarios' %}'">
             <i class="fas fa-users me-2"></i>Usuários do Sistema</button>
         {% endif %}
-
         <button type="button" class="btn btn-light" onclick="location.href='{% url 'configuracao' %}'">
             <i class="fas fa-cog me-2"></i>Configurações</button>
     </div>
@@ -61,7 +60,9 @@
 <!-- Container -->
 <div class="bloco">
     {% include 'components/message.html' %}
-    {% block content_dash %}
+    <div class="p-3">
+        {% block content_dash %}
+    </div>
     {% endblock %}
 </div>
 

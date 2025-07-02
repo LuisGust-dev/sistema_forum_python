@@ -1,0 +1,61 @@
+{% extends "base_dashboard.html" %}
+{% block title %}{% if request.path == '/forum/criar-postagem-forum/'%}
+Criar
+{% else %}
+Editar
+{% endif %} uma Postagem{% endblock %}
+{% block content_dash %}
+<div class="row">
+    <div class="col-md-8">
+        <form class="p-3 rounded-3 shadow-sm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <h4 class="mb-4">
+                {% if request.path == '/forum/criar-postagem-forum/'%}
+                    Criar Postagem
+                {% else %}
+                    Editar Postagem
+                {% endif %}
+            </h4>
+
+            <div class="mb-3">
+                {{ form.titulo.label_tag }}
+                {{ form.titulo }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.descricao.label_tag }}
+                {{ form.descricao }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.data_publicacao.label_tag }}
+                {{ form.data_publicacao }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.anexar_imagem.label_tag }}
+                {{ form.anexar_imagem }}
+            </div>
+
+            <!-- Destaque para o campo "ativo" -->
+            <div class="mt-4 p-3 border rounded bg-light">
+                <label class="form-label fw-bold">Deseja publicar agora?</label>
+                <div class="form-check">
+                    {{ form.ativo }}
+                </div>
+                <small class="text-muted">Se desmarcado, a postagem será salva como rascunho.</small>
+            </div>
+
+            <!-- Botão Criar -->
+            <div class="mt-4 text-end">
+                <button type="submit" class="btn btn-primary fw-bold px-4">
+                    {% if request.path == '/forum/criar-postagem-forum/'%}
+                    Criar
+                    {% else %}
+                    Editar
+                    {% endif %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
