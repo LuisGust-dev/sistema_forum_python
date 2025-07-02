@@ -16,44 +16,53 @@ Editar
                     Editar Postagem
                 {% endif %}
             </h4>
-
+            {% if form.usuario.is_hidden %}
+            {{ form.usuario }}
+            {% else %}
             <div class="mb-3">
-                {{ form.titulo.label_tag }}
+                Usuário:
+                {{ form.usuario }}
+            </div>
+            {% endif %}
+            <div class="mb-3">
+                Título:
                 {{ form.titulo }}
             </div>
-
             <div class="mb-3">
-                {{ form.descricao.label_tag }}
+                Descrição:
                 {{ form.descricao }}
             </div>
 
             <div class="mb-3">
-                {{ form.data_publicacao.label_tag }}
+                Data de Publicação:
                 {{ form.data_publicacao }}
             </div>
 
             <div class="mb-3">
-                {{ form.anexar_imagem.label_tag }}
+                Anexar Imagem:
                 {{ form.anexar_imagem }}
             </div>
-
-            <!-- Destaque para o campo "ativo" -->
             <div class="mt-4 p-3 border rounded bg-light">
                 <label class="form-label fw-bold">Deseja publicar agora?</label>
-                <div class="form-check">
+                <div class="form-check d-flex align-items-center gap-2">
                     {{ form.ativo }}
+                    <span id="status-icone">
+            {% if form.ativo.value %}
+                <i class="fas fa-globe text-success"></i>
+            {% else %}
+                <i class="fas fa-user text-muted"></i>
+            {% endif %}
+        </span>
                 </div>
-                <small class="text-muted">Se desmarcado, a postagem será salva como rascunho.</small>
-            </div>
-
-            <!-- Botão Criar -->
-            <div class="mt-4 text-end">
-                <button type="submit" class="btn btn-primary fw-bold px-4">
-                    {% if request.path == '/forum/criar-postagem-forum/'%}
-                    Criar
-                    {% else %}
-                    Editar
-                    {% endif %}</button>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary fw-bold px-4">
+                        {% if request.path == '/forum/criar-postagem-forum/' %}
+                        Criar
+                        {% else %}
+                        Editar
+                        {% endif %}
+                    </button>
+                </div>
             </div>
         </form>
     </div>

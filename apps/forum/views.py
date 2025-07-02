@@ -1,12 +1,10 @@
-from urllib import request
-
+from datetime import date
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from apps.base.utils import add_form_errors_to_messages
 from apps.forum import models
 from django.contrib import messages
 from apps.forum.forms import PostagemForumForm
-from apps.forum.models import user, PostagemForum
 
 
 def lista_postagem_forum(request):
@@ -26,22 +24,26 @@ def lista_postagem_forum(request):
 
 @login_required
 def criar_postagem_forum(request):
-    form = PostagemForumForm()
+    user = request.user
+    lista_grupos = ['administrador', 'colaborador']
     if request.method == 'POST':
-        form = PostagemForumForm(request.POST, request.FILES)
+        form = PostagemForumForm(request.POST, request.FILES, user=request.user )
         if form.is_valid():
             forum = form.save(commit=False)
-            forum.usuario = request.user
+            if not (user.is_superuser or user.groups.filter(name__in=lista_grupos).exists()):
+                forum.usuario = user
             forum.save()
             messages.success(request, 'Seu Post foi cadastrado com sucesso!')
             return redirect('lista-postagem-forum')
+    else:
+        form = PostagemForumForm(user=request.user)
     return render(request, 'form-postagem-forum.html', {'form': form})
 
 # Detalhes da postagem (ID)
 def detalhe_postagem_forum(request, id):
     postagem = get_object_or_404(models.PostagemForum, id=id)
     context = {'postagem': postagem}
-    return render(request, 'detalhe-postagem-forum.html', {'postagem': postagem})
+    return render(request, 'detalhe-postagem-forum.html', context)
 
 # Editar postagem (ID)
 @login_required
@@ -53,15 +55,18 @@ def editar_postagem_forum(request, id):
         messages.error(request, 'Seu usuário não tem permissão para acessar essa página!')
         return redirect('lista-postagem-forum')
     if request.method == 'POST':
-        form = PostagemForumForm(request.POST, instance=postagem)
+        form = PostagemForumForm(request.POST, request.FILES, instance=postagem, user=user)
         if form.is_valid():
-            form.save()
-            messages.warning(request, f'Seu Post "{postagem.titulo}" foi atualizado com sucesso!')
+            postagem = form.save(commit=False)
+            if not (user.is_superuser or user.groups.filter(name__in=lista_grupos).exists()):
+                postagem.usuario = user
+            postagem.save()
+            messages.warning(request, f'Seu Post \"{postagem.titulo}\" foi atualizado com sucesso!')
         else:
             add_form_errors_to_messages(request, form)
         return redirect('editar-postagem-forum', id=postagem.id)
     else:
-        form = PostagemForumForm(instance=postagem)
+        form = PostagemForumForm(instance=postagem, user=user)
     return render(request, 'form-postagem-forum.html', {'form': form})
 
 #Deletar postagem (ID)

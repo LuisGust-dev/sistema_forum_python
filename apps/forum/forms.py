@@ -1,5 +1,7 @@
 from django import forms
 from .models import PostagemForum
+import datetime
+
 
 class PostagemForumForm(forms.ModelForm):
     data_publicacao = forms.DateField(
@@ -8,11 +10,18 @@ class PostagemForumForm(forms.ModelForm):
 
     class Meta:
         model = PostagemForum
-        fields = ['titulo', 'descricao', 'data_publicacao', 'ativo', 'anexar_imagem']
+        fields = ['usuario', 'titulo', 'descricao', 'data_publicacao', 'ativo', 'anexar_imagem']
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
-        super(PostagemForumForm, self).__init__(*args, **kwargs)
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        if user:
+            if user.is_superuser or user.groups.filter(name__in=['administrador', 'colaborador']).exists():
+                self.fields['usuario'].initial = user
+            else:
+                self.fields['usuario'].widget = forms.HiddenInput()
+                self.fields['usuario'].initial = user
 
         # Adiciona classes aos campos
         for field_name, field in self.fields.items():
