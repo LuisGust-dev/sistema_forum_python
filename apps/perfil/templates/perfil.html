@@ -52,12 +52,10 @@
                     </h5>
                     {% if postagem.usuario == request.user %}
                     <div>
-                        <a class="btn btn-outline-warning btn-sm" href="{% url 'editar-postagem-forum' postagem.id %}">
-                            <i class="fas fa-edit"></i>
-                        </a>
+                        <a class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" href="#editarPostagemModal{{postagem.id}}" role="button" >
+                            <i class="fas fa-edit"></i></a>
                         <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" href="#confirmarExclusaoModal{{postagem.id}}" role="button">
-                            <i class="fas fa-trash"></i>
-                        </a>
+                            <i class="fas fa-trash"></i></a>
                     </div>
                     {% endif %}
                 </div>
