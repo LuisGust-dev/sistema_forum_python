@@ -36,7 +36,9 @@
         <div class="col-md-4">
             <form class="d-flex" role="search" method="GET">
                 <input class="form-control form-control-lg me-2 shadow-sm" type="search" name="title_post" placeholder="Pesquisar postagens..." aria-label="Search">
-                <button class="btn btn-dark btn-lg" type="submit">🔍</button>
+                <button class="btn btn-dark btn-lg" type="submit">
+                    <i class="fas fa-search"></i>
+                </button>
             </form>
         </div>
 
@@ -52,9 +54,9 @@
                     </h5>
                     {% if postagem.usuario == request.user %}
                     <div>
-                        <a class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" href="#editarPostagemModal{{postagem.id}}" role="button" >
+                        <a class="btn btn-warning btn-sm" data-bs-toggle="modal" href="#editarPostagemModal{{postagem.id}}" role="button" >
                             <i class="fas fa-edit"></i></a>
-                        <a class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" href="#confirmarExclusaoModal{{postagem.id}}" role="button">
+                        <a class="btn btn-danger btn-sm" data-bs-toggle="modal" href="#confirmarExclusaoModal{{postagem.id}}" role="button">
                             <i class="fas fa-trash"></i></a>
                     </div>
                     {% endif %}
@@ -64,6 +66,7 @@
                     <small class="text-muted"><i class="far fa-clock me-1"></i>{{postagem.data_publicacao}}</small>
                 </div>
             </div>
+            {% include "modal-form-postagem-forum.html" %}
             {% include "modal-deletar-postagem-forum.html" %}
             {% endfor %}
         </div>

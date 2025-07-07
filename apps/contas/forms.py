@@ -1,4 +1,5 @@
 import random
+import re
 import string
 
 from django.conf import settings

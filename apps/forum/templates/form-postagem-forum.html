@@ -1,70 +1,14 @@
 {% extends "base_dashboard.html" %}
-{% block title %}{% if request.path == '/forum/criar-postagem-forum/'%}
-Criar
-{% else %}
-Editar
-{% endif %} uma Postagem{% endblock %}
+{% block title %}Criar uma Postagem{% endblock %}
 {% block content_dash %}
-<div class="row">
+<div class="row"> 
     <div class="col-md-8">
         <form class="p-3 rounded-3 shadow-sm" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            <h4 class="mb-4">
-                {% if request.path == '/forum/criar-postagem-forum/'%}
-                    Criar Postagem
-                {% else %}
-                    Editar Postagem
-                {% endif %}
-            </h4>
-            {% if form.usuario.is_hidden %}
-            {{ form.usuario }}
-            {% else %}
-            <div class="mb-3">
-                Usuário:
-                {{ form.usuario }}
-            </div>
-            {% endif %}
-            <div class="mb-3">
-                Título:
-                {{ form.titulo }}
-            </div>
-            <div class="mb-3">
-                Descrição:
-                {{ form.descricao }}
-            </div>
-
-            <div class="mb-3">
-                Data de Publicação:
-                {{ form.data_publicacao }}
-            </div>
-
-            <div class="mb-3">
-                Anexar Imagem:
-                {{ form.anexar_imagem }}
-            </div>
-            <div class="mt-4 p-3 border rounded bg-light">
-                <label class="form-label fw-bold">Deseja publicar agora?</label>
-                <div class="form-check d-flex align-items-center gap-2">
-                    {{ form.ativo }}
-                    <span id="status-icone">
-            {% if form.ativo.value %}
-                <i class="fas fa-globe text-success"></i>
-            {% else %}
-                <i class="fas fa-user text-muted"></i>
-            {% endif %}
-        </span>
-                </div>
-                <div class="text-end">
-                    <button type="submit" class="btn btn-primary fw-bold px-4">
-                        {% if request.path == '/forum/criar-postagem-forum/' %}
-                        Criar
-                        {% else %}
-                        Editar
-                        {% endif %}
-                    </button>
-                </div>
-            </div>
+            <h4>{% if request.path == '/forum/criar-postagem-forum/' %} Criar Postagem {% else %} Editar Postagem {% endif %}</h4>
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary mx-2">Criar</button>
         </form>
-    </div>
-</div>
+    </div> 
+</div> 
 {% endblock %}
