@@ -12,7 +12,7 @@ class PostagemForumAdmin(admin.ModelAdmin):
     
 # Register your models here.
 admin.site.register(models.PostagemForum, PostagemForumAdmin)
-# admin.site.register(models.PostagemForumImagem)
+admin.site.register(models.PostagemForumImagem)
 
 
 

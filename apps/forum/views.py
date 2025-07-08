@@ -8,6 +8,8 @@ from django.contrib import messages
 from apps.forum import models
 
 
+
+
 # Lista de Postagens.
 def lista_postagem_forum(request):
     postagens = models.PostagemForum.objects.filter(ativo=True)
@@ -20,12 +22,26 @@ def criar_postagem_forum(request):
     form = PostagemForumForm()
     if request.method == 'POST':
         form = PostagemForumForm(request.POST, request.FILES)
+        
+        # Cria postagens 
+        
+def criar_postagem_forum(request):
+    form = PostagemForumForm()
+    if request.method == 'POST':
+        form = PostagemForumForm(request.POST, request.FILES)
         if form.is_valid():
-            forum = form.save(commit=False)
-            forum.usuario = request.user
-            forum.save()
-            messages.success(request, 'Seu Post foi cadastrado com sucesso!')
-            return redirect('lista-postagem-forum')
+            postagem_imagens = request.FILES.getlist('postagem_imagens') # pega as imagens
+            if len(postagem_imagens) > 5: # faz um count
+                messages.error(request, 'Você só pode adicionar no máximo 5 imagens.')
+            else:
+                forum = form.save(commit=False)
+                forum.usuario = request.user
+                forum.save()
+                for f in postagem_imagens:
+                    models.PostagemForumImagem.objects.create(postagem=forum, imagem=f)
+                # Redirecionar para uma página de sucesso ou fazer qualquer outra ação desejada
+                messages.success(request, 'Seu Post foi cadastrado com sucesso!')
+                return redirect('lista-postagem-forum')
     return render(request, 'form-postagem-forum.html', {'form': form})
 
 
@@ -52,9 +68,19 @@ def editar_postagem_forum(request, id):
     if request.method == 'POST':
         form = PostagemForumForm(request.POST, instance=postagem)
         if form.is_valid():
-            form.save()
-            messages.warning(request, message)
-            return redirect(redirect_route)
+
+            contar_imagens = postagem.postagem_imagens.count() # Quantidade de imagens sque já tenho no post
+            postagem_imagens = request.FILES.getlist('postagem_imagens') # Quantidade de imagens que estou enviando para salvar
+
+            if contar_imagens + len(postagem_imagens) > 5:
+                messages.error(request, 'Você só pode adicionar no máximo 5 imagens.')
+                return redirect(redirect_route)
+            else: 
+                form.save()
+                for f in postagem_imagens:  # for para pegar as imagens e salvar
+                    models.PostagemForumImagem.objects.create(postagem=postagem, imagem=f)
+                messages.warning(request, message)
+                return redirect(redirect_route)
         else:
             add_form_errors_to_messages(request, form) 
     return JsonResponse({'status': 'Ok'})
@@ -98,3 +124,5 @@ def lista_postagem_forum(request):
         
     context = {'postagens': postagens,'form_dict': form_dict}
     return render(request, template_view, context) 
+
+    

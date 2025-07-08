@@ -20,7 +20,7 @@
                     
                     <h2>{{postagem.titulo}}</h2>
                     <p>{{postagem.descricao}}</p>
-                    {% if postagem.anexar_imagem and postagem.anexar_imagem.name %}
+                    {% for imagem in postagem.postagem_imagens.all %} # Adiciona um for 
                     <a href="{{postagem.anexar_imagem.url}}" target="_blank">Anexo</a>  
                      <a href="" role="button"><i class="link-info fas fa-image fa-2x me-2"></i></a>
 
@@ -43,13 +43,14 @@
                             </div>
                         </div>
                     </div>
-                    {% endif %}
+                    {% endfor %}
                     <!-- Button trigger modal -->
 
 
 <a data-bs-toggle="modal" href="#exampleModal" role="button"><i class="link-info fas fa-image fa-2x me-2"></i></a>
 
-
+<a class="btn btn-warning" data-bs-toggle="modal" href="#editarPostagemModal{{postagem.id}}" role="button"><i class="fas fa-edit"></i></a> 
+<a class="btn btn-danger" data-bs-toggle="modal" href="#confirmarExclusaoModal{{postagem.id}}" role="button"><i class="fas fa-trash"></i></a>  
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog  modal-dialog-centered">

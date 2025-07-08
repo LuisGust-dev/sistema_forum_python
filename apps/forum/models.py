@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ValidationError
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.conf import settings
@@ -30,3 +31,8 @@ class PostagemForumImagem(models.Model):
  
     def __str__(self):
         return self.postagem.titulo
+
+    def clean(self):
+        super().clean()
+        if self.postagem.postagem_imagens.count() >= 5: # Limitar somente 5 anexos
+            raise ValidationError('Você só pode adicionar no máximo 5 anexos.')     
