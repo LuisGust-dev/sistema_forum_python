@@ -14,6 +14,7 @@ class PostagemForumAdmin(admin.ModelAdmin):
 admin.site.register(models.PostagemForum, PostagemForumAdmin)
 admin.site.register(models.PostagemForumImagem)
 
+admin.site.register(models.PostagemForumComentario)
 
 
 

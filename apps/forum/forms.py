@@ -30,7 +30,7 @@ class PostagemForumForm(forms.ModelForm):
 
     class Meta:
         model = PostagemForum
-        fields = ['titulo', 'descricao', 'ativo', 'anexar_imagem']
+        fields = ['titulo', 'descricao', 'ativo',]
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)

@@ -6,6 +6,8 @@ from apps.base.utils import add_form_errors_to_messages
 from apps.forum.forms import PostagemForumForm
 from django.contrib import messages  
 from apps.forum import models
+from django.core.paginator import Paginator
+
 
 
 
@@ -17,14 +19,7 @@ def lista_postagem_forum(request):
     return render(request, 'lista-postagem-forum.html', context)
 
 
-# Cria postagens 
-def criar_postagem_forum(request): 
-    form = PostagemForumForm()
-    if request.method == 'POST':
-        form = PostagemForumForm(request.POST, request.FILES)
-        
-        # Cria postagens 
-        
+# Cria postagens      
 def criar_postagem_forum(request):
     form = PostagemForumForm()
     if request.method == 'POST':
@@ -122,7 +117,27 @@ def lista_postagem_forum(request):
         form = PostagemForumForm(instance=el) 
         form_dict[el] = form
         
-    context = {'postagens': postagens,'form_dict': form_dict}
+         
+    form_list = [(postagem, form) for postagem, form in form_dict.items()]
+    
+    paginacao = Paginator(form_list, 3) 
+    
+    pagina_numero = request.GET.get("page")
+    page_obj = paginacao.get_page(pagina_numero)
+    
+    form_dict = {postagem: form for postagem, form in page_obj}
+    
+    context = {'page_obj': page_obj, 'form_dict': form_dict}
     return render(request, template_view, context) 
 
     
+    
+def remover_imagem(request):
+    imagem_id = request.GET.get('imagem_id') # Id da imagem
+    verifica_imagem = models.PostagemForumImagem.objects.filter(id=imagem_id) 
+    if verifica_imagem:
+        postagem_imagem = models.PostagemForumImagem.objects.get(id=imagem_id) 
+        # Excluir a imagem do banco de dados e do sistema de arquivos (pasta postagem-forum/)
+        postagem_imagem.imagem.delete()
+        postagem_imagem.delete()
+    return JsonResponse({'message': 'Imagem removida com sucesso.'})

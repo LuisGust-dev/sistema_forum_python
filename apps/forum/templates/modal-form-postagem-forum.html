@@ -9,27 +9,41 @@
 			<div class="modal-body">
 				<form method="post" action="{% url 'editar-postagem-forum' postagem.id %}" enctype="multipart/form-data">
 					{% csrf_token %}
-					{{ form.as_p }}
-					<input type="hidden" name="redirect_route" value="{{ request.path }}">
+					{{ form.as_p }} 
+						  <input type="hidden" name="redirect_route" value="{{ request.path }}">
 					<button type="submit" class="btn btn-primary mx-2">Salvar</button>
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 				</form>
-
-				<div class="d-flex g-3"> 
-            {% for img in postagem.postagem_imagens.all %} 
-            <div class="position-relative p-2 div-imagem">
-                    <a href="#" class="position-absolute badge bg-danger remover-imagem" data-imagem-id="{{ img.id }}"
-                            <i class="fas fa-times"></i>
-                    </a>
-                    <img src="{{ img.imagem.url }}" class="img-fluid rounded" alt="{{img.id}}" width="100"> 
-            </div>
-            {% endfor %}
-        </div>
-			</div>
+				<div class="d-flex g-3">
+					{% for img in postagem.postagem_imagens.all %}
+					<div class="position-relative p-2 div-imagem">
+						<a href="#" class="position-absolute badge bg-danger remover-imagem" data-imagem-id="{{img.id}}">
+							<i class="fas fa-times"></i>
+						</a>
+						<img src="{{ img.imagem.url }}" class="img-fluid rounded" alt="{{img.id}}" width="100"> 
+					</div>
+					{% endfor %}
+ 				</div>
+		  </div>
 		</div>
 	</div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js" integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
+ 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script> 	<script defer src="https://use.fontawesome.com/releases/v5.15.4/js/all.js" integrity="sha384-rOA1PnstxnOBLzCLMcre8ybwbTmemjzdNlILg8O7z1lUkLXozs4DHonlDtnE7fpc" crossorigin="anonymous"></script>
+
 <script>
-	
+	$('.remover-imagem').click(function(e) {
+		e.preventDefault();
+		var imageId = $(this).data('imagem-id');
+		$.ajax({
+			type: 'GET',
+			url: '{% url "remover-imagem" %}',
+			data: {'imagem_id': imageId}, 
+			datatype: "json",
+			success: function (data) { 
+				
+				$(e.target).closest('.div-imagem').remove(); 
+			}, 
+		});
+	});
 </script>
