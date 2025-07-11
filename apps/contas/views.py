@@ -9,7 +9,7 @@ from perfil.models import Perfil
 from contas.models import MyUser
 from contas.forms import CustomUserCreationForm, UserChangeForm
 from contas.permissions import grupo_colaborador_required
-
+from django.core.paginator import Paginator
 from apps.base.utils import add_form_errors_to_messages
 from apps.perfil.forms import PerfilForm
 from core import settings
@@ -138,9 +138,13 @@ def atualizar_usuario(request, username):
 # Listar todos Usuários do Sistema
 @login_required
 @grupo_colaborador_required(['administrador','colaborador'])
-def lista_usuarios(request): # Lista Cliente
+def lista_usuarios(request):
     lista_usuarios = MyUser.objects.select_related('perfil').filter(is_superuser=False)
-    return render(request, 'lista-usuarios.html', {'lista_usuarios': lista_usuarios})
+    paginacao = Paginator(lista_usuarios, 5)
+    pagina_numero = request.GET.get("page")
+    page_obj = paginacao.get_page(pagina_numero)
+    context = {'page_obj': page_obj}
+    return render(request, 'lista-usuarios.html', context)
 
 # Adicionar usuário
 @login_required
