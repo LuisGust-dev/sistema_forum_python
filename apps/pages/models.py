@@ -1,6 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
 # Create your models here.
 class Pagina(models.Model): 
     nome = models.CharField(max_length=100, 
@@ -15,7 +15,7 @@ class Pagina(models.Model):
         return self.nome
     
     
-## Tipos de Blocos, SLIDE, BANNER_1, BANNER_2, BANNER_3 etc...
+## Tipos de Blocos, SLIDE, BANNER_1, BANNER_2, BANNER_3 
 class TipoBloco(models.Model): 
     nome = models.CharField(max_length=100, 
                               help_text='Digite o nome do bloco. Ex: SLIDE, BANNER_1...')

@@ -8,7 +8,7 @@ from django.conf import settings
 from django.utils.text import slugify
 user = get_user_model()
 
-# Create your models here.
+
 class PostagemForum(models.Model):
     usuario = models.ForeignKey(user, related_name="user_postagem_forum", on_delete=models.CASCADE)  
     titulo = models.CharField('Titulo',max_length=100)

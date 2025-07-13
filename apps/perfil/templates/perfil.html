@@ -6,9 +6,11 @@
         <!-- Foto e botão -->
         <div class="d-flex flex-column align-items-center text-center">
             <img src="{{obj.perfil.foto.url}}" class="img-thumbnail border rounded-circle shadow-sm mb-2" width="200" alt="Foto de Perfil">
-            <button class="btn btn-warning" onclick="location.href='{% url 'atualizar_meu_usuario' %}'">
-                <i class="fas fa-edit me-1"></i> Editar Perfil
-            </button>
+                {% if request.user == obj.perfil.usuario or request.user.is_superuser %}
+            <a class="btn btn-warning" href="{% url 'editar-perfil' obj.username %}" role="button">
+                <i class="fas fa-cog"></i> Editar Perfil
+            </a>
+            {% endif %}
         </div>
 
         <!-- Informações do perfil -->
