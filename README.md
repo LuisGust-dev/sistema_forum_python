@@ -10,7 +10,7 @@ Este projeto tem como objetivo desenvolver um sistema empresarial completo para 
 - Fórum de postagens e comentários
 - Gerenciamento de usuários com aprovação via e-mail
 - Perfil de usuário e páginas dinâmicas
-- Deploy com Docker, Nginx e PostgreSQL
+
 
 ---
 
@@ -21,7 +21,6 @@ Este projeto tem como objetivo desenvolver um sistema empresarial completo para 
 - Python 3.10+
 - Git
 - Virtualenv (ou venv)
-- PostgreSQL (opcional, se quiser usar localmente)
 ### Passo a passo
 
 ```bash
